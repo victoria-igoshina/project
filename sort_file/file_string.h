@@ -2,7 +2,6 @@
 
 #include <cstdio>
 
-// TODO жирный класс, может сделать класс указателей
 template<class TFilePtr, typename TIntegerType>
 class TFileString {
     protected:
@@ -24,7 +23,7 @@ class TFileString {
             , Id(0)
             , End(false)
         {}
-        TFileString(const TFilePtr& filePtr, const TIntegerType& countLettersBeforeString = 0) // TODO не перегрузить ли конструктор
+        TFileString(const TFilePtr& filePtr, const TIntegerType& countLettersBeforeString = 0)
             : FilePtr(filePtr)
             , CountLettersBeforeString(countLettersBeforeString)
             , Letter(0)

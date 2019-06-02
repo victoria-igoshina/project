@@ -13,7 +13,7 @@ void MergeChunks(const TFilesNames& filesNames, size_t numberChunks, size_t maxA
 template<class TChunkString>
 typename std::vector<TChunkString>::iterator FindLowerBoundChunk(typename std::vector<TChunkString>::iterator begin
                                                                 , typename std::vector<TChunkString>::iterator end
-                                                                , TChunkString* newString) {  // TODO переписать?
+                                                                , TChunkString* newString) {
     if (begin == end) {
         return begin;
     }

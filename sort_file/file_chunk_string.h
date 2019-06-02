@@ -13,7 +13,7 @@ class TFileChunkString: public TFileString<TFilePtr, TIntegerType> {
             : CurrentString(0)
             , CountStrings(0)
         {}
-        TFileChunkString(const TFilePtr& filePtr, const TIntegerType& countStrings) // TODO надо ли по ссылке
+        TFileChunkString(const TFilePtr& filePtr, const TIntegerType& countStrings)
             : TFileString<TFilePtr, TIntegerType> (filePtr)
             , CountStrings(countStrings)
             , CurrentString(0)
@@ -33,7 +33,7 @@ class TFileChunkString: public TFileString<TFilePtr, TIntegerType> {
             this->SetLetter(0);
         }
 
-        void FillNewPtr() { // TODO
+        void FillNewPtr() {
             this->FilePtr.ShiftSomeLetters(this->GetCountLettersBeforeString());
             FillDefaultValues();
         }

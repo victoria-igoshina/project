@@ -121,20 +121,29 @@ void MergeIterationChunks(TIntegerType iteration, TIntegerType numberChunks, TIn
 template<typename TInputStream, typename TOutputStream, typename TIntegerType>
 void MergeChunks(const TFilesNames& filesNames, size_t numberChunks, size_t maxAmountMergeChunks) {
     size_t iteration = 0;
-    while (numberChunks > 1) {
-        for (size_t i = 0; maxAmountMergeChunks * (i + 1) <= numberChunks; ++i) {
-            MergeIterationChunks<TInputStream, TOutputStream, TIntegerType>(iteration, i, i * maxAmountMergeChunks,
-                                                                            (i + 1) * maxAmountMergeChunks, filesNames);
-        }
-        if (numberChunks % maxAmountMergeChunks > 0) {
-            MergeIterationChunks<TInputStream, TOutputStream, TIntegerType>(iteration, numberChunks / maxAmountMergeChunks,
-                                                                            (numberChunks / maxAmountMergeChunks) * maxAmountMergeChunks, numberChunks, filesNames);
-        }
+    try {
+        while (numberChunks > 1) {
+            for (size_t i = 0; maxAmountMergeChunks * (i + 1) <= numberChunks; ++i) {
+                MergeIterationChunks<TInputStream, TOutputStream, TIntegerType>(iteration, i, i * maxAmountMergeChunks,
+                                                                                (i + 1) * maxAmountMergeChunks, filesNames);
+            }
+            if (numberChunks % maxAmountMergeChunks > 0) {
+                MergeIterationChunks<TInputStream, TOutputStream, TIntegerType>(iteration, numberChunks / maxAmountMergeChunks,
+                                                                                (numberChunks / maxAmountMergeChunks) * maxAmountMergeChunks, numberChunks, filesNames);
+            }
 
-        ++iteration;
-        numberChunks = numberChunks % maxAmountMergeChunks ? numberChunks / maxAmountMergeChunks + 1 : numberChunks / maxAmountMergeChunks;
+            ++iteration;
+            numberChunks = numberChunks % maxAmountMergeChunks ? numberChunks / maxAmountMergeChunks + 1 : numberChunks / maxAmountMergeChunks;
+        }
+    } catch (const std::exception& e) {
+        for (TIntegerType i = 0; i < numberChunks; ++i) {
+            std::remove(filesNames.GetOutputIterationChunkFile(iteration, i).c_str());
+            std::remove(filesNames.GetOutputIterationChunkCountFile(iteration, i).c_str());
+            std::remove(filesNames.GetOutputIterationChunkFile(iteration + 1, i).c_str());
+            std::remove(filesNames.GetOutputIterationChunkCountFile(iteration + 1, i).c_str());
+        }
+        std::cerr << e.what() << std::endl;
     }
-
     std::rename(filesNames.GetOutputIterationChunkFile(iteration, 0).c_str(), filesNames.GetResultFile().c_str());
     std::remove(filesNames.GetOutputIterationChunkCountFile(iteration, 0).c_str());
 }

@@ -7,9 +7,19 @@ template<class TFileStringTypeName>
 void SortChunk(std::vector<TFileStringTypeName>& strings) {
     bool end = false;
     while (!end) {
-        std::sort(strings.begin(), strings.end());
+        size_t lastId = 0;
+        size_t lastInd = 0;
+        for (size_t i = 1; i < strings.size(); ++i) {
+            if (lastId == strings[i].GetId()) {
+                continue;
+            }
+            std::sort(strings.begin() + lastInd, strings.begin() + i);
+            lastInd = i;
+            lastId = strings[i].GetId();
+        }
+        std::sort(strings.begin() + lastInd, strings.end());
 
-        size_t lastId = strings[0].GetId();
+        lastId = strings[0].GetId();
 
         for (size_t i = 1; i < strings.size(); ++i) {
             if (strings[i - 1] < strings[i]) {
